@@ -74,7 +74,7 @@ function getGiveawaysFromHtml(html: string): Giveaway[] {
         const elem = elems[elems.length - 1];
         const toCheck = elem.textContent?.match(DIGITS_ONLY_REGEX);
         if (toCheck && toCheck[0]) {
-            result = +toCheck[0];
+            result = parseInt(toCheck[0]);
         }
         return result;
     }
@@ -83,9 +83,9 @@ function getGiveawaysFromHtml(html: string): Giveaway[] {
     const gamesList = [];
     const games = document.querySelectorAll(INNER_GAME_WRAP_CLASS);
     for (const game of games) {
-        const gameTitle = game.querySelector(GAME_NAME_CLASS)!.textContent || '';
+        const gameTitle = game.querySelector(GAME_NAME_CLASS)?.textContent || '';
         const pointCost = getPointCost(game);
-        const relativeUrl = getRelativeUrl(game)!.getAttribute('href') || '';
+        const relativeUrl = getRelativeUrl(game)?.getAttribute('href') || '';
         const requiredLevel = getRequiredLevel(game) || 0;
         gamesList.push({gameTitle, pointCost, requiredLevel, relativeUrl});
     }
