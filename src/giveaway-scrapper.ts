@@ -68,7 +68,7 @@ function getGiveawaysFromHtml(html: string): Giveaway[] {
         }
     }
 
-    function getPointCost(game:  Element): number {
+    function getPointCost(game: Element): number {
         let result = 0;
         const elems = game.querySelectorAll(GAME_MISC_CLASS);
         const elem = elems[elems.length - 1];

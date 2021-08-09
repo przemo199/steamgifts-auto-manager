@@ -8,7 +8,7 @@ function exists(): boolean {
         if (fs.existsSync(REQUESTED_GAMES_PATH)) {
             result = true;
         }
-    } catch(err) {
+    } catch (err) {
         result = false;
     }
     return result;

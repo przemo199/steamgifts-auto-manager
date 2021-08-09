@@ -9,7 +9,6 @@ const BASE_URL = 'https://www.steamgifts.com/';
 const LOGIN_URL = BASE_URL + '/?login';
 const ENTERED_GIVEAWAYS_SEARCH_URL = BASE_URL + '/giveaways/entered/search?page=';
 
-
 let browser: Browser;
 
 async function launchBrowser(headless = true): Promise<Browser> {
@@ -73,10 +72,9 @@ async function enterGiveaways(giveaways: Giveaway[]): Promise<void> {
     const enteredGiveaways = await getLinksToEnteredGiveaways();
     const promises = [];
     for (const giveaway of giveaways) {
-        if (giveaway.requiredLevel <= accountLevel && points >= giveaway.pointCost &&
+        if (giveaway.requiredLevel <= accountLevel && giveaway.pointCost <= points &&
             !enteredGiveaways.includes(giveaway.relativeUrl)) {
             points -= giveaway.pointCost;
-            console.log(giveaway);
             promises.push(enterGiveaway(giveaway));
         }
     }
