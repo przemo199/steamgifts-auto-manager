@@ -10,10 +10,11 @@ async function main() {
     }
 
     const requestedGames = requests.getRequestedGames();
-    await launchAndLogin();
+    const launchPromise = launchAndLogin();
     const scrapedGiveaways = await scrapeGiveaways();
     const giveawaysToEnter = scrapedGiveaways.filter(game => customMatch(game.gameTitle, requestedGames));
 
+    await launchPromise;
     await enterGiveaways(giveawaysToEnter);
     console.timeEnd('Total time');
 }
