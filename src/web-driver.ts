@@ -13,7 +13,7 @@ let browser: Browser;
 
 async function launchBrowser(headless = true): Promise<Browser> {
     // @ts-ignore
-    return puppeteer.launch({headless: headless, userDataDir: './temp/userData'});
+    return puppeteer.launch({headless: headless, userDataDir: './tmp/userData'});
 }
 
 async function enterGiveaway(giveaway: Giveaway): Promise<boolean> {
@@ -28,10 +28,14 @@ async function enterGiveaway(giveaway: Giveaway): Promise<boolean> {
             console.log('Already in giveaway for: ' + giveaway.gameTitle);
         } else {
             if ((await page.$$('.sidebar__entry-insert')).length != 0) {
-                await page.click('.sidebar__entry-insert');
-                await page.waitForSelector('.sidebar__entry-insert.is-hidden', {timeout: 2000});
-                console.log('Entered giveaway for: ' + giveaway.gameTitle);
-                result = true;
+                try {
+                    await page.click('.sidebar__entry-insert');
+                    await page.waitForSelector('.sidebar__entry-insert.is-hidden', {timeout: 2000});
+                    console.log('Entered giveaway for: ' + giveaway.gameTitle);
+                    result = true;
+                } catch (e) {
+                    console.log('Failed to enter giveaway for: ' + giveaway.gameTitle);
+                }
             } else {
                 console.log('Failed to enter giveaway for: ' + giveaway.gameTitle);
             }
