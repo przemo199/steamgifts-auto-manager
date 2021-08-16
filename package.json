@@ -1,7 +1,7 @@
 {
     "name": "steamgifts-auto-manager",
     "description": "",
-    "version": "1.0.0",
+    "version": "0.1.0",
     "author": "Przemek Kaminski <przemyslaw.m.kaminski@gmail.com> (https://www.linkedin.com/in/przemekkaminski/)",
     "dependencies": {
         "@types/jsdom": "^16.2.13",
@@ -24,8 +24,7 @@
     "private": true,
     "scripts": {
         "launch": "tsc.cmd && node ./dist/main.js",
-        "launch-ts-node": "node --loader ts-node/esm ./src/main.ts",
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "launch-ts-node": "node --loader ts-node/esm ./src/main.ts"
     },
     "type": "module"
 }

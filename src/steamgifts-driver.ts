@@ -46,27 +46,31 @@ async function enterGiveaway(giveaway: Giveaway): Promise<boolean> {
 }
 
 async function getAccountLevel(): Promise<number> {
-    let level = 0;
+    let level = 0; // if failed to retrieve account level assume lowest possible level
     const page = await browser.newPage();
     await page.goto(BASE_URL, {waitUntil: 'domcontentloaded'});
     const profileElement = await page.$('a[href="/account"]');
     if (profileElement) {
         const span = (await profileElement.$$('span'))[1];
-        const content = await span.evaluate(el => el.getAttribute('title'));
-        if (content) {
-            level = parseInt(content);
+        const accountLevel = await span.evaluate(el => el.getAttribute('title'));
+        if (accountLevel) {
+            level = parseInt(accountLevel, 10);
         }
     }
     page.close();
     return level;
 }
 
-async function getPointState() {
+async function getPointState(): Promise<number> {
+    let points = 400; // if failed to retrieve the state of points assume the highest possible value
     const page = await browser.newPage();
     await page.goto(BASE_URL, {waitUntil: 'domcontentloaded'});
-    const points = await (await page.$('.nav__points'))?.evaluate(el => el.textContent);
+    const textContent = await (await page.$('.nav__points'))?.evaluate(el => el.textContent);
+    if (textContent) {
+        points = parseInt(textContent, 10);
+    }
     page.close();
-    return parseInt(points!);
+    return points;
 }
 
 async function enterGiveaways(giveaways: Giveaway[]): Promise<void> {
@@ -112,9 +116,12 @@ async function getLinksToEnteredGiveaways(): Promise<string[]> {
 
         for (const entry of entries) {
             if (await entry.$('.table__column__secondary-link')) {
-                const link = await entry.$('.table_image_thumbnail');
-                if (link) {
-                    result.push((await link.evaluate(el => el.getAttribute('href')))!);
+                const urlElement = await entry.$('.table_image_thumbnail');
+                if (urlElement) {
+                    const url = await urlElement.evaluate(el => el.getAttribute('href'));
+                    if (url) {
+                        result.push(url);
+                    }
                 }
             } else {
                 isEntered = false;
