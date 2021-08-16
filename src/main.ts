@@ -6,7 +6,8 @@ import {customMatch} from './utils.js';
 async function main() {
     console.time('Total time');
     if (!requests.exists()) {
-        throw new Error('requests.txt not found');
+        requests.initFile();
+        throw new Error('requests.txt not found, fill newly created file with game titles');
     }
 
     const requestedGames = requests.getRequestedGames();

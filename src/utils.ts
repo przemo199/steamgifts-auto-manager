@@ -1,17 +1,33 @@
-export function customMatch(gameTitle: string, gameList: string[]): boolean {
-    let result = false;
+import {RequestedGames} from './interfaces';
+
+export function customMatch(gameTitle: string, requestedGames: RequestedGames): boolean {
     const title = gameTitle.toLowerCase();
+
     if (title.substring(title.length - 3) == '...') {
         const shortTitle = title.substring(0, title.length - 3);
-        for (const game of gameList) {
-            if (game.includes(shortTitle) && game.length > shortTitle.length) {
-                result = true;
-                break;
+
+        for (const game of requestedGames.exactMatches) {
+            if (game.includes(shortTitle)) {
+                return true;
+            }
+        }
+
+        for (const anyMatch of requestedGames.anyMatches) {
+            if (shortTitle.includes(anyMatch)) {
+                return true;
             }
         }
     } else {
-        result = gameList.includes(title);
+        if (requestedGames.exactMatches.includes(title)) {
+            return true;
+        }
+
+        for (const anyMatch of requestedGames.anyMatches) {
+            if (title.includes(anyMatch)) {
+                return true;
+            }
+        }
     }
 
-    return result;
+    return false;
 }

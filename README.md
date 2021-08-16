@@ -10,7 +10,7 @@ First clone this repository to your drive:
 git clone https://github.com/przemo199/steamgifts-auto-manager
 ```
 
-then install the required dependencies:
+Then install the required dependencies:
 
 ```bash
 npm install
@@ -18,7 +18,9 @@ npm install
 
 ## Usage
 
-This tool uses ```requests.txt``` file in the root directory to filter giveaways, enter one game title per line before you launch the tool.
+This tool uses ```requests.txt``` file in the root directory to filter giveaways, you can divide desired titles into two groups denoted by tags ```[exact_match]``` to enter giveaway if its title matches entirely one of the provided game titles and ```[any_match]``` to enter giveaway if its title contains any of the provided names, enter one game title per line and at least one tag before you launch the tool.
+
+>**_NOTE:_** steamgifts.com truncates long game titles and this tool attempts to handle it by checking if any of the requested games includes truncated title
 
 On the first launch (and after the authentication expires) the tool will launch a headful chrome and ask you to login through steam, the user data is saved in ```tmp``` folder and deleting it will allow you to change the associated account at any time.
 
