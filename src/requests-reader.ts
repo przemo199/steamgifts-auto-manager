@@ -3,20 +3,11 @@ import {RequestedGames} from './interfaces';
 
 const REQUESTED_GAMES_PATH = './requests.txt';
 
-function initFile(): void {
-    fs.writeFileSync('requests.txt', '[exact_match]\n\n[any_match]\n');
-}
-
-function exists(): boolean {
-    let result = false;
-    try {
-        if (fs.existsSync(REQUESTED_GAMES_PATH)) {
-            result = true;
-        }
-    } catch (err) {
-        result = false;
+function exists(): void {
+    if (!fs.existsSync(REQUESTED_GAMES_PATH)) {
+        fs.writeFileSync('requests.txt', '[exact_match]\n\n[any_match]\n');
+        throw new Error('requests.txt not found, fill newly created file with game titles');
     }
-    return result;
 }
 
 function sortEntries(): void {
@@ -41,8 +32,8 @@ function readGames(): RequestedGames {
     const lines = readLines();
     const exactMatchIndex = lines.indexOf('[exact_match]');
     const anyMatchIndex = lines.indexOf('[any_match]');
-    const exactMatches = [];
-    const anyMatches = [];
+    const exactMatches: string[] = [];
+    const anyMatches: string[] = [];
 
     if (exactMatchIndex > -1) {
         for (let i = exactMatchIndex + 1; i < lines.length; i++) {
@@ -64,6 +55,10 @@ function readGames(): RequestedGames {
         }
     }
 
+    if (exactMatchIndex === -1 && anyMatchIndex === -1) {
+        throw new Error('no match tag found in requests.txt');
+    }
+
     return {exactMatches, anyMatches};
 }
 
@@ -72,4 +67,4 @@ function getRequestedGames(): RequestedGames {
     return readGames();
 }
 
-export {exists, getRequestedGames, initFile};
+export {exists, getRequestedGames};

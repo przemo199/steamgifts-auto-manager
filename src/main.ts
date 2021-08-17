@@ -5,10 +5,8 @@ import {customMatch} from './utils.js';
 
 async function main() {
     console.time('Total time');
-    if (!requests.exists()) {
-        requests.initFile();
-        throw new Error('requests.txt not found, fill newly created file with game titles');
-    }
+
+    requests.exists();
 
     const requestedGames = requests.getRequestedGames();
     const launchPromise = launchAndLogin();
@@ -17,6 +15,7 @@ async function main() {
 
     await launchPromise;
     await enterGiveaways(giveawaysToEnter);
+
     console.timeEnd('Total time');
 }
 
