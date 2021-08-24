@@ -14,22 +14,8 @@ const GAME_NAME_CLASS = '.giveaway__heading__name';
 const GAME_MISC_CLASS = '.giveaway__heading__thin';
 const REQUIRED_LEVEL_CLASS = '.giveaway__column--contributor-level.giveaway__column--contributor-level--negative';
 
-const HEADERS = {
-    'authority': 'www.steamgifts.com',
-    'pragma': 'no-cache',
-    'cache-control': 'no-cache',
-    'dnt': '1',
-    'upgrade-insecure-requests': '1',
-    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36',
-    'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-    'sec-fetch-site': 'none',
-    'sec-fetch-mode': 'navigate',
-    'sec-fetch-dest': 'document',
-    'accept-language': 'en-GB, en;q=0.9'
-};
-
 async function getHtmlFromUrl(url: string): Promise<string> {
-    return (await got(url, {headers: HEADERS})).body;
+    return (await got(url)).body;
 }
 
 async function scrapeGiveaways(): Promise<Giveaway[]> {
@@ -45,7 +31,7 @@ async function scrapeGiveaways(): Promise<Giveaway[]> {
         document = await getHtmlFromUrl(SEARCH_URL + i);
     }
     const result = [...new Map(games.map(game => [game['relativeUrl'], game])).values()];
-    console.log('Scrapped ' + i + ' pages and found ' + result.length + ' unique games');
+    console.log('Scrapped ' + (i - 1) + ' pages and found ' + result.length + ' unique games');
     console.timeEnd('Scrapping giveaways');
     return result;
 }
