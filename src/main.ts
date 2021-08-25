@@ -1,6 +1,6 @@
 import * as requests from './requests-reader.js';
 import {scrapeGiveaways} from './giveaway-scrapper.js';
-import {enterGiveaways, launchAndLogin} from './steamgifts-driver.js';
+import {enterGiveaways, launchAndLogin} from './steamgifts-web-driver.js';
 import {customMatch} from './utils.js';
 
 async function main() {

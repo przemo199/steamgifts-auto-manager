@@ -4,7 +4,7 @@ steamgifts-auto-manager is an automation tool that utilises [got](https://www.np
 
 ## Installation
 
-First clone this repository to your drive:
+First clone this repository:
 
 ```bash
 git clone https://github.com/przemo199/steamgifts-auto-manager
@@ -18,7 +18,7 @@ npm install
 
 ## Usage
 
-This tool uses ```requests.txt``` file in the root directory to filter giveaways, you can divide desired titles into two groups denoted by tags ```[exact_match]``` to enter giveaway if its title matches entirely one of the provided game titles and ```[any_match]``` to enter giveaway if its title contains any of the provided names, enter one game title per line and at least one tag before you launch the tool.
+This tool uses ```requests.txt``` file in the root directory to filter giveaways, you can divide desired titles into two groups denoted by tags ```[exact_match]``` to enter giveaway if its title matches entirely one of the provided game titles and ```[any_match]``` to enter giveaway if its title contains any of the provided names, additionally none of the giveaways with titles listed below the tag ```[no_match]``` will be not entered, title matching in this case is similar to ```[exact_match]``` tag, enter one game title per line and at least one of the ```[exact_match]``` or ```[any_match]``` tags before you launch the tool.
 
 >**_NOTE:_** steamgifts.com truncates long game titles and this tool attempts to handle it by checking if any of the requested games includes truncated title
 

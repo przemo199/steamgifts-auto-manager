@@ -8,6 +8,7 @@ interface Giveaway {
 interface RequestedGames {
     exactMatches: string[];
     anyMatches: string[];
+    noMatches: string[];
 }
 
 export {Giveaway, RequestedGames};

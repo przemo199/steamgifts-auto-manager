@@ -6,6 +6,12 @@ export function customMatch(gameTitle: string, requestedGames: RequestedGames): 
     if (title.substring(title.length - 3) == '...') {
         const shortTitle = title.substring(0, title.length - 3);
 
+        for (const game of requestedGames.noMatches) {
+            if (game.includes(shortTitle)) {
+                return false;
+            }
+        }
+
         for (const game of requestedGames.exactMatches) {
             if (game.includes(shortTitle)) {
                 return true;
@@ -18,6 +24,10 @@ export function customMatch(gameTitle: string, requestedGames: RequestedGames): 
             }
         }
     } else {
+        if (requestedGames.noMatches.includes(title)) {
+            return false;
+        }
+
         if (requestedGames.exactMatches.includes(title)) {
             return true;
         }
