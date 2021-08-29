@@ -1,4 +1,4 @@
-import got from 'got';
+import {request} from 'undici';
 import {JSDOM} from 'jsdom';
 import {Giveaway} from './interfaces';
 
@@ -15,7 +15,8 @@ const GAME_MISC_CLASS = '.giveaway__heading__thin';
 const REQUIRED_LEVEL_CLASS = '.giveaway__column--contributor-level.giveaway__column--contributor-level--negative';
 
 async function getHtmlFromUrl(url: string): Promise<string> {
-    return (await got(url)).body;
+    const {body} = await request(url);
+    return body.text();
 }
 
 async function scrapeGiveaways(): Promise<Giveaway[]> {
