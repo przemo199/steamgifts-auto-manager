@@ -4,26 +4,26 @@
     "version": "0.1.0",
     "author": "Przemek Kaminski <przemyslaw.m.kaminski@gmail.com> (https://www.linkedin.com/in/przemekkaminski/)",
     "dependencies": {
-        "@types/jsdom": "^16.2.13",
         "jsdom": "^16.7.0",
         "puppeteer": "^10.1.0",
         "puppeteer-extra": "^3.1.18",
         "puppeteer-extra-plugin-stealth": "^2.7.8",
-        "ts-node": "^10.2.0",
-        "typescript": "^4.3.5",
         "undici": "^4.5.1"
     },
     "devDependencies": {
+        "@types/jsdom": "^16.2.13",
         "@typescript-eslint/eslint-plugin": "^4.29.0",
         "@typescript-eslint/parser": "^4.29.0",
-        "eslint": "^7.32.0"
+        "eslint": "^7.32.0",
+        "typescript": "^4.3.5",
+        "ts-node": "^10.2.0"
     },
     "keywords": [],
     "license": "ISC",
     "main": ".src/main.ts",
     "private": true,
     "scripts": {
-        "launch": "tsc.cmd && node ./dist/main.js",
+        "start": "tsc.cmd && node ./dist/main.js",
         "launch-ts-node": "node --loader ts-node/esm ./src/main.ts"
     },
     "type": "module"

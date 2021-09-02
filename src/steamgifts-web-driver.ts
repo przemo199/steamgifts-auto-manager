@@ -78,7 +78,7 @@ async function enterGiveaways(giveaways: Giveaway[]): Promise<void> {
         console.time('Entering giveaways');
         const accountLevel = await getAccountLevel();
         let points = await getPointState();
-        const enteredGiveaways = await getLinksToEnteredGiveaways();
+        const enteredGiveaways = await scrapeLinksToEnteredGiveaways();
         const promises = [];
         for (const giveaway of giveaways) {
             if (giveaway.requiredLevel <= accountLevel && giveaway.pointCost <= points &&
@@ -107,11 +107,11 @@ async function enterGiveaways(giveaways: Giveaway[]): Promise<void> {
     await browser.close();
 }
 
-async function getLinksToEnteredGiveaways(): Promise<string[]> {
+async function scrapeLinksToEnteredGiveaways(): Promise<string[]> {
     const page = await browser.newPage();
     const result: string[] = [];
     let i = 1;
-    let isEntered = true;
+    let hasContent = true;
 
     do {
         await page.goto(ENTERED_GIVEAWAYS_SEARCH_URL + i, {waitUntil: 'domcontentloaded'});
@@ -128,10 +128,10 @@ async function getLinksToEnteredGiveaways(): Promise<string[]> {
                     }
                 }
             } else {
-                isEntered = false;
+                hasContent = false;
             }
         }
-    } while (isEntered);
+    } while (hasContent);
 
     return result;
 }
