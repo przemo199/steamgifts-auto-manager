@@ -21,20 +21,20 @@ async function getHtmlFromUrl(url: string): Promise<string> {
 
 async function scrapeGiveaways(): Promise<Giveaway[]> {
     console.time('Scrapping giveaways');
-    let document;
-    let i = 1;
-    const games: Giveaway[] = [];
+    let html;
+    let iterator = 1;
+    const giveaways: Giveaway[] = [];
 
-    document = await getHtmlFromUrl(SEARCH_URL + i);
-    while (document.indexOf('No results were found.') == -1) {
-        games.push(...getGiveawaysFromHtml(document));
-        i++;
-        document = await getHtmlFromUrl(SEARCH_URL + i);
+    html = await getHtmlFromUrl(SEARCH_URL + iterator);
+    while (html.indexOf('No results were found.') == -1) {
+        giveaways.push(...getGiveawaysFromHtml(html));
+        iterator++;
+        html = await getHtmlFromUrl(SEARCH_URL + iterator);
     }
-    const result = [...new Map(games.map(game => [game['relativeUrl'], game])).values()];
-    console.log('Scrapped ' + (i - 1) + ' pages and found ' + result.length + ' unique games');
+    const uniqueGiveaways = [...new Map(giveaways.map(giveaway => [giveaway['relativeUrl'], giveaway])).values()];
+    console.log('Scrapped ' + (iterator - 1) + ' pages and found ' + uniqueGiveaways.length + ' unique games');
     console.timeEnd('Scrapping giveaways');
-    return result;
+    return uniqueGiveaways;
 }
 
 function getGiveawaysFromHtml(html: string): Giveaway[] {
@@ -80,4 +80,4 @@ function getGiveawaysFromHtml(html: string): Giveaway[] {
     return gamesList;
 }
 
-export {scrapeGiveaways};
+export {scrapeGiveaways, getGiveawaysFromHtml};

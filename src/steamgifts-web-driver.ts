@@ -1,12 +1,14 @@
 import {Browser} from 'puppeteer';
 import puppeteer from 'puppeteer-extra';
 import pluginStealth from 'puppeteer-extra-plugin-stealth';
+import {getGiveawaysFromHtml} from './giveaway-scrapper.js';
 import {Giveaway} from './interfaces';
 
 puppeteer.use(pluginStealth());
 
 const BASE_URL = 'https://www.steamgifts.com/';
 const LOGIN_URL = BASE_URL + '/?login';
+const SEARCH_URL = BASE_URL + 'giveaways/search?page=';
 const ENTERED_GIVEAWAYS_SEARCH_URL = BASE_URL + '/giveaways/entered/search?page=';
 
 let browser: Browser;
@@ -136,6 +138,28 @@ async function scrapeLinksToEnteredGiveaways(): Promise<string[]> {
     return result;
 }
 
+async function scrapeGiveaways(): Promise<Giveaway[]> {
+    console.time('Scrapping giveaways');
+    const page = await browser.newPage();
+    const giveaways: Giveaway[] = [];
+    let iterator = 1;
+
+    await page.goto(SEARCH_URL + iterator, {waitUntil: 'domcontentloaded'});
+    let html = await page.content();
+    while (html.indexOf('No results were found.') == -1) {
+        giveaways.push(...getGiveawaysFromHtml(html));
+        iterator++;
+        await page.goto(SEARCH_URL + iterator, {waitUntil: 'domcontentloaded'});
+        html = await page.content();
+    }
+
+    const uniqueGiveaways = [...new Map(giveaways.map(giveaway => [giveaway['relativeUrl'], giveaway])).values()];
+    console.log('Scrapped ' + (iterator - 1) + ' pages and found ' + uniqueGiveaways.length + ' unique games');
+    console.timeEnd('Scrapping giveaways');
+
+    return uniqueGiveaways;
+}
+
 async function launchAndLogin(): Promise<void> {
     async function isLogged(b: Browser) {
         const page = await b.newPage();
@@ -183,4 +207,4 @@ async function launchAndLogin(): Promise<void> {
     browser = br;
 }
 
-export {launchAndLogin, enterGiveaways};
+export {launchAndLogin, enterGiveaways, scrapeGiveaways};
