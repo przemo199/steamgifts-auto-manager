@@ -1,6 +1,6 @@
 # steamgifts-auto-manager
 
-steamgifts-auto-manager is an automation tool that utilises [got](https://www.npmjs.com/package/got) and [puppeteer](https://www.npmjs.com/package/puppeteer) to automatically search for and enter giveaways on [www.steamgifts.com](https://www.steamgifts.com/)
+steamgifts-auto-manager is a tool that uses [puppeteer](https://www.npmjs.com/package/puppeteer) to automatically search for and enter giveaways on [steamgifts.com](https://www.steamgifts.com/)
 
 ## Installation
 
@@ -18,7 +18,7 @@ npm install
 
 ## Usage
 
-This tool uses ```requests.txt``` file in the root directory to filter giveaways, you can divide desired titles into two groups denoted by tags ```[exact_match]``` to enter giveaway if its title matches entirely one of the provided game titles and ```[any_match]``` to enter giveaway if its title contains any of the provided names, additionally none of the giveaways with titles listed below the tag ```[no_match]``` will be not entered, title matching in this case is similar to ```[exact_match]``` tag, enter one game title per line and at least one of the ```[exact_match]``` or ```[any_match]``` tags before you launch the tool.
+This tool uses ```requests.txt``` file in the root directory to filter giveaways, you can divide desired titles into three groups denoted by tags ```[exact_match]``` to enter giveaway if its title matches entirely one of the provided game titles and ```[any_match]``` to enter giveaway if its title contains any of the provided names, additionally none of the giveaways with titles listed below the tag ```[no_match]``` will be not entered, title matching in this case is similar to ```[exact_match]``` tag, enter one game title per line and at least one of the ```[exact_match]``` or ```[any_match]``` tags before you launch the tool.
 
 >**_NOTE:_** steamgifts.com truncates long game titles and this tool attempts to handle it by checking if any of the requested games includes truncated title
 
@@ -29,5 +29,5 @@ The tool attempts to enter all giveaways that match their title with the game ti
 To start the tool use:
 
 ```bash
-npm run launch
+npm run start
 ```

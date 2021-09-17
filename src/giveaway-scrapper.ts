@@ -1,9 +1,5 @@
-import {request} from 'undici';
 import {JSDOM} from 'jsdom';
 import {Giveaway} from './interfaces';
-
-const BASE_URL = 'https://www.steamgifts.com/';
-const SEARCH_URL = BASE_URL + 'giveaways/search?page=';
 
 const DIGITS_ONLY_REGEX = /\d+/;
 
@@ -13,29 +9,6 @@ const INNER_GAME_WRAP_CLASS = '.giveaway__row-inner-wrap';
 const GAME_NAME_CLASS = '.giveaway__heading__name';
 const GAME_MISC_CLASS = '.giveaway__heading__thin';
 const REQUIRED_LEVEL_CLASS = '.giveaway__column--contributor-level.giveaway__column--contributor-level--negative';
-
-async function getHtmlFromUrl(url: string): Promise<string> {
-    const {body} = await request(url);
-    return body.text();
-}
-
-async function scrapeGiveaways(): Promise<Giveaway[]> {
-    console.time('Scrapping giveaways');
-    let html;
-    let iterator = 1;
-    const giveaways: Giveaway[] = [];
-
-    html = await getHtmlFromUrl(SEARCH_URL + iterator);
-    while (html.indexOf('No results were found.') == -1) {
-        giveaways.push(...getGiveawaysFromHtml(html));
-        iterator++;
-        html = await getHtmlFromUrl(SEARCH_URL + iterator);
-    }
-    const uniqueGiveaways = [...new Map(giveaways.map(giveaway => [giveaway['relativeUrl'], giveaway])).values()];
-    console.log('Scrapped ' + (iterator - 1) + ' pages and found ' + uniqueGiveaways.length + ' unique games');
-    console.timeEnd('Scrapping giveaways');
-    return uniqueGiveaways;
-}
 
 function getGiveawaysFromHtml(html: string): Giveaway[] {
     function getRelativeUrl(game: Element) {
@@ -80,4 +53,4 @@ function getGiveawaysFromHtml(html: string): Giveaway[] {
     return gamesList;
 }
 
-export {scrapeGiveaways, getGiveawaysFromHtml};
+export {getGiveawaysFromHtml};
