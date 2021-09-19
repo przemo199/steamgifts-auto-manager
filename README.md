@@ -1,5 +1,7 @@
 # steamgifts-auto-manager
 
+![tests](https://github.com/przemo199/steamgifts-auto-manager/actions/workflows/tests.yml/badge.svg)
+
 steamgifts-auto-manager is a tool that uses [puppeteer](https://www.npmjs.com/package/puppeteer) to automatically search for and enter giveaways on [steamgifts.com](https://www.steamgifts.com/)
 
 ## Installation

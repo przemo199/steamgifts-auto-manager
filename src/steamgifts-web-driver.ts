@@ -77,36 +77,43 @@ async function getPointState(): Promise<number> {
 }
 
 async function enterGiveaways(giveaways: Giveaway[]): Promise<void> {
-    if (giveaways) {
-        console.time('Entering giveaways');
-        const accountLevel = await getAccountLevel();
-        let points = await getPointState();
-        const enteredGiveaways = await scrapeLinksToEnteredGiveaways();
-        const promises = [];
-        for (const giveaway of giveaways) {
-            if (giveaway.requiredLevel <= accountLevel && giveaway.pointCost <= points &&
-                !enteredGiveaways.includes(giveaway.relativeUrl)) {
-                points -= giveaway.pointCost;
-                promises.push(enterGiveaway(giveaway));
-            }
-        }
-        const results = await Promise.all(promises);
-        let entered = 0;
-        let notEntered = 0;
-        for (const result of results) {
-            if (result) {
-                entered++;
-            } else {
-                notEntered++;
-            }
-        }
-        console.log('Entered ' + entered + ' giveaway(s)');
-        console.log('Failed to enter ' + notEntered + ' giveaway(s)');
-        console.log(points + ' points left');
-        console.timeEnd('Entering giveaways');
-    } else {
+    if (giveaways.length === 0) {
         console.log('No giveaways to enter');
+        await browser.close();
+        return;
     }
+
+    console.time('Entering giveaways');
+    const accountLevel = await getAccountLevel();
+    let points = await getPointState();
+    const enteredGiveaways = await scrapeLinksToEnteredGiveaways();
+    const promises = [];
+
+    for (const giveaway of giveaways) {
+        if (giveaway.requiredLevel <= accountLevel && giveaway.pointCost <= points &&
+            !enteredGiveaways.includes(giveaway.relativeUrl)) {
+            points -= giveaway.pointCost;
+            promises.push(enterGiveaway(giveaway));
+        }
+    }
+
+    const results = await Promise.all(promises);
+
+    let entered = 0;
+    let notEntered = 0;
+
+    for (const result of results) {
+        if (result) {
+            entered++;
+        } else {
+            notEntered++;
+        }
+    }
+
+    console.log('Entered ' + entered + ' giveaway(s)');
+    console.log('Failed to enter ' + notEntered + ' giveaway(s)');
+    console.log(points + ' points left');
+    console.timeEnd('Entering giveaways');
     await browser.close();
 }
 

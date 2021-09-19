@@ -16,10 +16,10 @@ function getGiveawaysFromHtml(html: string): Giveaway[] {
     }
 
     function getRequiredLevel(game: Element) {
-        const temp = game.querySelector(REQUIRED_LEVEL_CLASS);
+        const levelElement = game.querySelector(REQUIRED_LEVEL_CLASS);
 
-        if (temp && temp.textContent) {
-            const matchResult = temp.textContent.match(DIGITS_ONLY_REGEX);
+        if (levelElement && levelElement.textContent) {
+            const matchResult = levelElement.textContent.match(DIGITS_ONLY_REGEX);
             if (matchResult && matchResult[0]) {
                 return parseInt(matchResult[0]);
             }
@@ -39,9 +39,10 @@ function getGiveawaysFromHtml(html: string): Giveaway[] {
         return result;
     }
 
-    const document = new JSDOM(html).window.document;
+    const document = (new JSDOM(html)).window.document;
     const gamesList = [];
     const games = document.querySelectorAll(INNER_GAME_WRAP_CLASS);
+
     for (const game of games) {
         const gameTitle = game.querySelector(GAME_NAME_CLASS)?.textContent || '';
         const pointCost = getPointCost(game);
