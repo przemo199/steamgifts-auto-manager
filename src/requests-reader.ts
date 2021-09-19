@@ -1,12 +1,12 @@
 import fs from 'fs';
 import {RequestedGames} from './interfaces';
 
-const REQUESTED_GAMES_PATH = './requests.txt';
+const REQUESTS_TXT_PATH = './requests.txt';
 
 function exists(): void {
-    if (!fs.existsSync(REQUESTED_GAMES_PATH)) {
-        fs.writeFileSync('requests.txt', '[exact_match]\n\n[any_match]\n\n[no_match]\n');
-        throw new Error('requests.txt not found, fill newly created file with game titles');
+    if (!fs.existsSync(REQUESTS_TXT_PATH)) {
+        fs.writeFileSync(REQUESTS_TXT_PATH, '[exact_match]\n\n[any_match]\n\n[no_match]\n');
+        throw new Error('requests.txt not found, its scaffold has been created in root directory');
     }
 }
 
@@ -21,12 +21,12 @@ function sortEntries(): void {
         '[no_match]',
         ...Array.from(new Set(games.noMatches)).sort()
     ];
-    fs.writeFileSync(REQUESTED_GAMES_PATH, linesToWrite.join('\n') + '\n');
+    fs.writeFileSync(REQUESTS_TXT_PATH, linesToWrite.join('\n') + '\n');
     console.timeEnd('Sorting and filtering entries');
 }
 
 function readLines(): string[] {
-    return fs.readFileSync(REQUESTED_GAMES_PATH).toString().toLowerCase()
+    return fs.readFileSync(REQUESTS_TXT_PATH).toString().toLowerCase()
     .split('\n').map(line => line.trim()).filter(line => line !== '');
 }
 
