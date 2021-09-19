@@ -43,6 +43,7 @@ async function enterGiveaway(giveaway: Giveaway): Promise<boolean> {
             }
         }
     }
+
     page.close();
     return result;
 }

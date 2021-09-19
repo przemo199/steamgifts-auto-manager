@@ -4,13 +4,13 @@ steamgifts-auto-manager is a tool that uses [puppeteer](https://www.npmjs.com/pa
 
 ## Installation
 
-First clone this repository:
+First, clone this repository:
 
 ```bash
 git clone https://github.com/przemo199/steamgifts-auto-manager
 ```
 
-Then install the required dependencies:
+Then, install the required dependencies:
 
 ```bash
 npm install
