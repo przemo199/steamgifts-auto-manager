@@ -7,8 +7,7 @@
         "jsdom": "^16.7.0",
         "puppeteer": "^10.2.0",
         "puppeteer-extra": "^3.1.18",
-        "puppeteer-extra-plugin-stealth": "^2.7.8",
-        "undici": "^4.5.1"
+        "puppeteer-extra-plugin-stealth": "^2.7.8"
     },
     "devDependencies": {
         "@types/jest": "^27.0.1",
@@ -26,8 +25,8 @@
     "main": ".src/main.ts",
     "private": true,
     "scripts": {
-        "start": "tsc.cmd && node ./dist/main.js",
-        "launch-ts-node": "node --loader ts-node/esm ./src/main.ts",
+        "start": "tsc && node ./dist/main.js",
+        "start-ts-node": "node --loader ts-node/esm ./src/main.ts",
         "test": "jest"
     },
     "type": "module"

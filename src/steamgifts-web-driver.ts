@@ -191,7 +191,9 @@ async function launchAndLogin(): Promise<void> {
         }
     }
 
+    console.time('Browser launched in');
     let br = await launchBrowser();
+    console.timeEnd('Browser launched in');
 
     if (!(await isLogged(br))) {
         await br.close();
