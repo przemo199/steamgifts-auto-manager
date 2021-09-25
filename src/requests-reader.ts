@@ -36,24 +36,24 @@ function readLines(): string[] {
         .split('\n').map(line => line.trim()).filter(line => line !== '');
 }
 
-function extractTitlesByTag(tag: Tag, lines: string[]): string[] {
-    const tagIndex =  lines.indexOf(tag);
+function readGames(): RequestedGames {
+    function extractTitlesByTag(tag: Tag): string[] {
+        const tagIndex =  lines.indexOf(tag);
 
-    const tagMatches = [];
-    if (tagIndex > -1) {
-        for (let i = tagIndex + 1; i < lines.length; i++) {
-            if (Object.values<string>(Tag).includes(lines[i])) {
-                break;
-            } else {
-                tagMatches.push(lines[i]);
+        const tagMatches = [];
+        if (tagIndex > -1) {
+            for (let i = tagIndex + 1; i < lines.length; i++) {
+                if (Object.values<string>(Tag).includes(lines[i])) {
+                    break;
+                } else {
+                    tagMatches.push(lines[i]);
+                }
             }
         }
+
+        return tagMatches;
     }
 
-    return tagMatches;
-}
-
-function readGames(): RequestedGames {
     const lines = readLines();
 
     if (lines.indexOf(Tag.EXACT_MATCH) === -1 && lines.indexOf(Tag.ANY_MATCH) === -1) {
@@ -61,9 +61,9 @@ function readGames(): RequestedGames {
     }
 
     return {
-        exactMatches: extractTitlesByTag(Tag.EXACT_MATCH, lines),
-        anyMatches: extractTitlesByTag(Tag.ANY_MATCH, lines),
-        noMatches: extractTitlesByTag(Tag.NO_MATCH, lines)
+        exactMatches: extractTitlesByTag(Tag.EXACT_MATCH),
+        anyMatches: extractTitlesByTag(Tag.ANY_MATCH),
+        noMatches: extractTitlesByTag(Tag.NO_MATCH)
     };
 }
 
