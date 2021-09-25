@@ -1,11 +1,15 @@
 import fs from 'fs';
 import {RequestedGames} from './interfaces';
 
+const EXACT_MATCH_TAG = '[exact_match]';
+const ANY_MATCH_TAG = '[any_match]';
+const NO_MATCH_TAG = '[no_match]';
+
 const REQUESTS_TXT_PATH = './requests.txt';
 
 function exists(): void {
     if (!fs.existsSync(REQUESTS_TXT_PATH)) {
-        fs.writeFileSync(REQUESTS_TXT_PATH, '[exact_match]\n\n[any_match]\n\n[no_match]\n');
+        fs.writeFileSync(REQUESTS_TXT_PATH, `${EXACT_MATCH_TAG}\n\n${ANY_MATCH_TAG}\n\n${NO_MATCH_TAG}\n`);
         throw new Error('requests.txt not found, its scaffold has been created in root directory');
     }
 }
@@ -14,11 +18,11 @@ function sortEntries(): void {
     console.time('Sorting and filtering entries');
     const games = readGames();
     const linesToWrite = [
-        '[exact_match]',
+        EXACT_MATCH_TAG,
         ...Array.from(new Set(games.exactMatches)).sort(),
-        '[any_match]',
+        ANY_MATCH_TAG,
         ...Array.from(new Set(games.anyMatches)).sort(),
-        '[no_match]',
+        NO_MATCH_TAG,
         ...Array.from(new Set(games.noMatches)).sort()
     ];
     fs.writeFileSync(REQUESTS_TXT_PATH, linesToWrite.join('\n') + '\n');
@@ -32,16 +36,16 @@ function readLines(): string[] {
 
 function readGames(): RequestedGames {
     const lines = readLines();
-    const exactMatchIndex = lines.indexOf('[exact_match]');
-    const anyMatchIndex = lines.indexOf('[any_match]');
-    const noMatchIndex = lines.indexOf('[no_match]');
+    const exactMatchIndex = lines.indexOf(EXACT_MATCH_TAG);
+    const anyMatchIndex = lines.indexOf(ANY_MATCH_TAG);
+    const noMatchIndex = lines.indexOf(NO_MATCH_TAG);
     const exactMatches: string[] = [];
     const anyMatches: string[] = [];
     const noMatches: string[] = [];
 
     if (exactMatchIndex > -1) {
         for (let i = exactMatchIndex + 1; i < lines.length; i++) {
-            if (['[any_match]', '[no_match]'].indexOf(lines[i]) > -1) {
+            if ([ANY_MATCH_TAG, NO_MATCH_TAG].indexOf(lines[i]) > -1) {
                 break;
             } else {
                 exactMatches.push(lines[i]);
@@ -51,7 +55,7 @@ function readGames(): RequestedGames {
 
     if (anyMatchIndex > -1) {
         for (let i = anyMatchIndex + 1; i < lines.length; i++) {
-            if (['[exact_match]', '[no_match]'].indexOf(lines[i]) > -1) {
+            if ([EXACT_MATCH_TAG, NO_MATCH_TAG].indexOf(lines[i]) > -1) {
                 break;
             } else {
                 anyMatches.push(lines[i]);
@@ -61,7 +65,7 @@ function readGames(): RequestedGames {
 
     if (noMatchIndex > -1) {
         for (let i = noMatchIndex + 1; i < lines.length; i++) {
-            if (['[exact_match]', '[any_match]'].indexOf(lines[i]) > -1) {
+            if ([EXACT_MATCH_TAG, ANY_MATCH_TAG].indexOf(lines[i]) > -1) {
                 break;
             } else {
                 noMatches.push(lines[i]);
