@@ -3,7 +3,7 @@ import {enterGiveaways, launchAndLogin, scrapeGiveaways} from './steamgifts-web-
 import {customMatch} from './utils.js';
 
 async function main() {
-    console.time('Total time');
+    console.time('Total execution time');
 
     requests.exists();
 
@@ -13,7 +13,7 @@ async function main() {
     const giveawaysToEnter = scrapedGiveaways.filter(game => customMatch(game.gameTitle, requestedGames));
     await enterGiveaways(giveawaysToEnter);
 
-    console.timeEnd('Total time');
+    console.timeEnd('Total execution time');
 }
 
 main();

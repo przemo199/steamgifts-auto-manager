@@ -120,25 +120,26 @@ async function enterGiveaways(giveaways: Giveaway[]): Promise<void> {
 async function scrapeLinksToEnteredGiveaways(): Promise<string[]> {
     const page = await browser.newPage();
     const result: string[] = [];
-    let i = 1;
+    let pageNumber = 1;
     let hasContent = true;
 
     do {
-        await page.goto(ENTERED_GIVEAWAYS_SEARCH_URL + i, {waitUntil: 'domcontentloaded'});
-        i++;
-        const entries = await page.$$('.table__row-inner-wrap');
+        await page.goto(ENTERED_GIVEAWAYS_SEARCH_URL + pageNumber, {waitUntil: 'domcontentloaded'});
+        pageNumber++;
+        const elements = await page.$$('.table__row-inner-wrap');
 
-        for (const entry of entries) {
-            if (await entry.$('.table__column__secondary-link')) {
-                const urlElement = await entry.$('.table_image_thumbnail');
-                if (urlElement) {
-                    const url = await urlElement.evaluate(el => el.getAttribute('href'));
+        for (const element of elements) {
+            if (await element.$('.table__column__secondary-link')) {
+                const elementUrl = await element.$('.table_image_thumbnail');
+                if (elementUrl) {
+                    const url = await elementUrl.evaluate(el => el.getAttribute('href'));
                     if (url) {
                         result.push(url);
                     }
                 }
             } else {
                 hasContent = false;
+                break;
             }
         }
     } while (hasContent);
@@ -150,19 +151,18 @@ async function scrapeGiveaways(): Promise<Giveaway[]> {
     console.time('Scrapping giveaways');
     const page = await browser.newPage();
     const giveaways: Giveaway[] = [];
-    let iterator = 1;
+    let pageNumber = 1;
 
-    await page.goto(SEARCH_URL + iterator, {waitUntil: 'domcontentloaded'});
-    let html = await page.content();
-    while (html.indexOf('No results were found.') == -1) {
-        giveaways.push(...getGiveawaysFromHtml(html));
-        iterator++;
-        await page.goto(SEARCH_URL + iterator, {waitUntil: 'domcontentloaded'});
+    let html;
+    do {
+        await page.goto(SEARCH_URL + pageNumber, {waitUntil: 'domcontentloaded'});
         html = await page.content();
-    }
+        giveaways.push(...getGiveawaysFromHtml(html));
+        pageNumber++;
+    } while (html.indexOf('No results were found.') == -1);
 
     const uniqueGiveaways = [...new Map(giveaways.map(giveaway => [giveaway['relativeUrl'], giveaway])).values()];
-    console.log('Scrapped ' + (iterator - 1) + ' pages and found ' + uniqueGiveaways.length + ' unique games');
+    console.log('Scrapped ' + (pageNumber - 1) + ' pages and found ' + uniqueGiveaways.length + ' unique games');
     console.timeEnd('Scrapping giveaways');
 
     return uniqueGiveaways;
