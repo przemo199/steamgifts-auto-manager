@@ -1,4 +1,4 @@
-import {customMatch} from '../src/utils';
+import {customFilter} from '../src/utils';
 
 it('correctly filters game titles when RequestedGames are empty', () => {
     const requestedGames = {
@@ -7,9 +7,9 @@ it('correctly filters game titles when RequestedGames are empty', () => {
         noMatches: []
     };
 
-    expect(customMatch('', requestedGames)).toEqual(false);
-    expect(customMatch('test', requestedGames)).toEqual(false);
-    expect(customMatch('123', requestedGames)).toEqual(false);
+    expect(customFilter('', requestedGames)).toEqual(false);
+    expect(customFilter('test', requestedGames)).toEqual(false);
+    expect(customFilter('123', requestedGames)).toEqual(false);
 });
 
 it('correctly filters game titles when RequestedGames contain duplicates', () => {
@@ -19,9 +19,9 @@ it('correctly filters game titles when RequestedGames contain duplicates', () =>
         noMatches: ['test']
     };
 
-    expect(customMatch('', requestedGames)).toEqual(false);
-    expect(customMatch('test', requestedGames)).toEqual(false);
-    expect(customMatch('123', requestedGames)).toEqual(false);
+    expect(customFilter('', requestedGames)).toEqual(false);
+    expect(customFilter('test', requestedGames)).toEqual(false);
+    expect(customFilter('123', requestedGames)).toEqual(false);
 });
 
 it('correctly filters game titles when RequestedGames contain only exactMatches', () => {
@@ -31,10 +31,10 @@ it('correctly filters game titles when RequestedGames contain only exactMatches'
         noMatches: []
     };
 
-    expect(customMatch('', requestedGames)).toEqual(false);
-    expect(customMatch('test', requestedGames)).toEqual(true);
-    expect(customMatch('123', requestedGames)).toEqual(false);
-    expect(customMatch('TEST', requestedGames)).toEqual(true);
+    expect(customFilter('', requestedGames)).toEqual(false);
+    expect(customFilter('test', requestedGames)).toEqual(true);
+    expect(customFilter('123', requestedGames)).toEqual(false);
+    expect(customFilter('TEST', requestedGames)).toEqual(true);
 });
 
 it('correctly filters game titles when RequestedGames contain only anyMatches', () => {
@@ -44,12 +44,12 @@ it('correctly filters game titles when RequestedGames contain only anyMatches', 
         noMatches: []
     };
 
-    expect(customMatch('', requestedGames)).toEqual(false);
-    expect(customMatch('test', requestedGames)).toEqual(true);
-    expect(customMatch('123', requestedGames)).toEqual(false);
-    expect(customMatch('TEST', requestedGames)).toEqual(true);
-    expect(customMatch('abcTESTabc', requestedGames)).toEqual(true);
-    expect(customMatch('123TEST123', requestedGames)).toEqual(true);
+    expect(customFilter('', requestedGames)).toEqual(false);
+    expect(customFilter('test', requestedGames)).toEqual(true);
+    expect(customFilter('123', requestedGames)).toEqual(false);
+    expect(customFilter('TEST', requestedGames)).toEqual(true);
+    expect(customFilter('abcTESTabc', requestedGames)).toEqual(true);
+    expect(customFilter('123TEST123', requestedGames)).toEqual(true);
 });
 
 it('correctly filters game titles when RequestedGames contain anyMatches and noMatches', () => {
@@ -59,11 +59,11 @@ it('correctly filters game titles when RequestedGames contain anyMatches and noM
         noMatches: ['123test123']
     };
 
-    expect(customMatch('', requestedGames)).toEqual(false);
-    expect(customMatch('test', requestedGames)).toEqual(true);
-    expect(customMatch('123', requestedGames)).toEqual(false);
-    expect(customMatch('TEST', requestedGames)).toEqual(true);
-    expect(customMatch('abcTESTabc', requestedGames)).toEqual(true);
-    expect(customMatch('123test123', requestedGames)).toEqual(false);
-    expect(customMatch('123TEST123', requestedGames)).toEqual(false);
+    expect(customFilter('', requestedGames)).toEqual(false);
+    expect(customFilter('test', requestedGames)).toEqual(true);
+    expect(customFilter('123', requestedGames)).toEqual(false);
+    expect(customFilter('TEST', requestedGames)).toEqual(true);
+    expect(customFilter('abcTESTabc', requestedGames)).toEqual(true);
+    expect(customFilter('123test123', requestedGames)).toEqual(false);
+    expect(customFilter('123TEST123', requestedGames)).toEqual(false);
 });

@@ -1,6 +1,6 @@
 import {RequestedGames} from './interfaces';
 
-export function customMatch(gameTitle: string, requestedGames: RequestedGames): boolean {
+export function customFilter(gameTitle: string, requestedGames: RequestedGames): boolean {
     const title = gameTitle.toLowerCase();
 
     if (title.substring(title.length - 3) == '...') {

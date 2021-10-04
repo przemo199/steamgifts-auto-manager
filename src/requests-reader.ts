@@ -16,19 +16,16 @@ function exists(): void {
     }
 }
 
-function sortEntries(): void {
-    console.time('Sorting and filtering entries');
-    const games = readGames();
+function writeToRequestsFile(requestedGames: RequestedGames): void {
     const linesToWrite = [
         Tag.EXACT_MATCH,
-        ...Array.from(new Set(games.exactMatches)).sort(),
+        ...requestedGames.exactMatches,
         Tag.ANY_MATCH,
-        ...Array.from(new Set(games.anyMatches)).sort(),
+        ...requestedGames.anyMatches,
         Tag.NO_MATCH,
-        ...Array.from(new Set(games.noMatches)).sort()
+        ...requestedGames.noMatches
     ].join('\n') + '\n';
     fs.writeFileSync(REQUESTS_FILE, linesToWrite);
-    console.timeEnd('Sorting and filtering entries');
 }
 
 function readLines(): string[] {
@@ -36,22 +33,23 @@ function readLines(): string[] {
         .split('\n').map(line => line.trim()).filter(line => line !== '');
 }
 
-function readGames(): RequestedGames {
-    function extractTitlesByTag(tag: Tag): string[] {
-        const tagIndex =  lines.indexOf(tag);
+function readRequestsFileContent(): RequestedGames {
+    function extractUniqueAndSortedTitlesByTag(tag: Tag): string[] {
+        const tagIndex = lines.indexOf(tag);
+
+        if (tagIndex === -1) return [];
 
         const tagMatches = [];
-        if (tagIndex > -1) {
-            for (let i = tagIndex + 1; i < lines.length; i++) {
-                if (Object.values<string>(Tag).includes(lines[i])) {
-                    break;
-                } else {
-                    tagMatches.push(lines[i]);
-                }
+        const tagValues = Object.values<string>(Tag);
+        for (let i = tagIndex + 1; i < lines.length; i++) {
+            if (tagValues.includes(lines[i])) {
+                break;
+            } else {
+                tagMatches.push(lines[i]);
             }
         }
 
-        return tagMatches;
+        return [...new Set(tagMatches)].sort();
     }
 
     const lines = readLines();
@@ -61,15 +59,18 @@ function readGames(): RequestedGames {
     }
 
     return {
-        exactMatches: extractTitlesByTag(Tag.EXACT_MATCH),
-        anyMatches: extractTitlesByTag(Tag.ANY_MATCH),
-        noMatches: extractTitlesByTag(Tag.NO_MATCH)
+        exactMatches: extractUniqueAndSortedTitlesByTag(Tag.EXACT_MATCH),
+        anyMatches: extractUniqueAndSortedTitlesByTag(Tag.ANY_MATCH),
+        noMatches: extractUniqueAndSortedTitlesByTag(Tag.NO_MATCH)
     };
 }
 
 function getRequestedGames(): RequestedGames {
-    sortEntries();
-    return readGames();
+    console.time('Sorting and filtering entries');
+    const requestedGames = readRequestsFileContent();
+    writeToRequestsFile(requestedGames);
+    console.timeEnd('Sorting and filtering entries');
+    return requestedGames;
 }
 
 export {exists, getRequestedGames};
