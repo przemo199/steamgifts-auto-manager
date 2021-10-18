@@ -5,7 +5,7 @@
     "author": "Przemek Kaminski <przemyslaw.m.kaminski@gmail.com> (https://www.linkedin.com/in/przemekkaminski/)",
     "dependencies": {
         "jsdom": "^16.7.0",
-        "puppeteer": "^10.2.0",
+        "puppeteer": "^10.4.0",
         "puppeteer-extra": "^3.1.18",
         "puppeteer-extra-plugin-stealth": "^2.7.8"
     },

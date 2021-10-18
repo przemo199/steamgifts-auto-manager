@@ -3,6 +3,8 @@ import puppeteer from 'puppeteer-extra';
 import pluginStealth from 'puppeteer-extra-plugin-stealth';
 import {getGiveawaysFromHtml} from './giveaway-scrapper.js';
 import {Giveaway} from './interfaces';
+import * as utils from './utils.js';
+import {printScrapedGiveawaysInfo} from './utils.js';
 
 puppeteer.use(pluginStealth());
 
@@ -24,22 +26,22 @@ async function enterGiveaway(giveaway: Giveaway): Promise<boolean> {
     await page.goto(BASE_URL + giveaway.relativeUrl, {waitUntil: 'domcontentloaded'});
 
     if ((await page.$$('.sidebar__error')).length != 0) {
-        console.log('Cannot enter giveaway for: ' + giveaway.gameTitle);
+        utils.printCannotEnterGiveaway(giveaway.gameTitle);
     } else {
         if ((await page.$$('.sidebar__entry-insert.is-hidden')).length != 0) {
-            console.log('Already in giveaway for: ' + giveaway.gameTitle);
+            utils.printAlreadyInGiveaway(giveaway.gameTitle);
         } else {
             if ((await page.$$('.sidebar__entry-insert')).length != 0) {
                 try {
                     await page.click('.sidebar__entry-insert');
                     await page.waitForSelector('.sidebar__entry-insert.is-hidden', {timeout: 2000});
-                    console.log('Entered giveaway for: ' + giveaway.gameTitle);
+                    utils.printEnteredGiveaway(giveaway.gameTitle);
                     result = true;
                 } catch (e) {
-                    console.log('Failed to enter giveaway for: ' + giveaway.gameTitle);
+                    utils.printFailedToEnterGiveaway(giveaway.gameTitle);
                 }
             } else {
-                console.log('Failed to enter giveaway for: ' + giveaway.gameTitle);
+                utils.printFailedToEnterGiveaway(giveaway.gameTitle);
             }
         }
     }
@@ -83,7 +85,8 @@ async function enterGiveaways(giveaways: Giveaway[]): Promise<void> {
         return;
     }
 
-    console.time('Entering giveaways');
+    console.time('Entered giveaways in');
+
     const accountLevel = await getAccountLevel();
     let points = await getPointState();
     const enteredGiveaways = await scrapeLinksToEnteredGiveaways();
@@ -99,21 +102,20 @@ async function enterGiveaways(giveaways: Giveaway[]): Promise<void> {
 
     const results = await Promise.all(promises);
 
-    let entered = 0;
-    let notEntered = 0;
+    let enteredGiveawaysCount = 0;
+    let failedGiveawaysCount = 0;
 
     for (const result of results) {
         if (result) {
-            entered++;
+            enteredGiveawaysCount++;
         } else {
-            notEntered++;
+            failedGiveawaysCount++;
         }
     }
 
-    console.log('Entered ' + entered + ' giveaway(s)');
-    console.log('Failed to enter ' + notEntered + ' giveaway(s)');
-    console.log(points + ' points left');
-    console.timeEnd('Entering giveaways');
+    utils.printNumberOfEnteredGiveaways(enteredGiveawaysCount);
+    utils.printRemainingPoints(points);
+    console.timeEnd('Entered giveaways in');
     await browser.close();
 }
 
@@ -148,22 +150,25 @@ async function scrapeLinksToEnteredGiveaways(): Promise<string[]> {
 }
 
 async function scrapeGiveaways(): Promise<Giveaway[]> {
-    console.time('Scrapping giveaways');
+    console.time('Scraped giveaways in');
     const page = await browser.newPage();
-    const giveaways: Giveaway[] = [];
+    const giveawaysMap = new Map<string, Giveaway>();
     let pageNumber = 1;
 
     let html;
     do {
         await page.goto(SEARCH_URL + pageNumber, {waitUntil: 'domcontentloaded'});
         html = await page.content();
-        giveaways.push(...getGiveawaysFromHtml(html));
+        getGiveawaysFromHtml(html).forEach(giveaway => {
+            giveawaysMap.set(giveaway.relativeUrl, giveaway);
+        });
         pageNumber++;
     } while (html.indexOf('No results were found.') == -1);
+    page.close();
 
-    const uniqueGiveaways = [...new Map(giveaways.map(giveaway => [giveaway['relativeUrl'], giveaway])).values()];
-    console.log('Scrapped ' + (pageNumber - 1) + ' pages and found ' + uniqueGiveaways.length + ' unique games');
-    console.timeEnd('Scrapping giveaways');
+    const uniqueGiveaways = [...giveawaysMap.values()];
+    console.timeEnd('Scraped giveaways in');
+    utils.printScrapedGiveawaysInfo(pageNumber - 1, uniqueGiveaways.length);
 
     return uniqueGiveaways;
 }
@@ -197,10 +202,10 @@ async function launchAndLogin(): Promise<void> {
 
     if (!(await isLogged(br))) {
         await br.close();
+        console.log('No login information detected, please login through steam in the launched window');
         br = await launchBrowser(false);
         const page = await br.newPage();
         await page.goto(LOGIN_URL, {waitUntil: 'domcontentloaded'});
-        console.log('No login information detected, please login through steam in the launched window');
         await page.waitForNavigation({timeout: 0, waitUntil: 'domcontentloaded'});
         if (!(await page.content()).includes('Account (')) {
             console.log('Login failed');

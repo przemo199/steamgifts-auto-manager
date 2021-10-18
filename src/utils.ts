@@ -1,6 +1,6 @@
 import {RequestedGames} from './interfaces';
 
-export function customFilter(gameTitle: string, requestedGames: RequestedGames): boolean {
+function customFilter(gameTitle: string, requestedGames: RequestedGames): boolean {
     const title = gameTitle.toLowerCase();
 
     if (title.substring(title.length - 3) == '...') {
@@ -41,3 +41,43 @@ export function customFilter(gameTitle: string, requestedGames: RequestedGames):
 
     return false;
 }
+
+function printCannotEnterGiveaway(giveawayTitle: string): void {
+    console.log('Cannot enter giveaway for: ' + giveawayTitle);
+}
+
+function printAlreadyInGiveaway(giveawayTitle: string): void {
+    console.log('Already in giveaway for: ' + giveawayTitle);
+}
+
+function printEnteredGiveaway(giveawayTitle: string): void {
+    console.log('Entered giveaway for: ' + giveawayTitle);
+}
+
+function printFailedToEnterGiveaway(giveawayTitle: string): void {
+    console.log('Failed to enter giveaway for: ' + giveawayTitle);
+}
+
+function printNumberOfEnteredGiveaways(giveawayCount: number): void {
+    console.log('Entered ' + giveawayCount + (giveawayCount === 1 ? ' giveaway' : ' giveaways'));
+}
+
+function printRemainingPoints(points: number): void {
+    console.log(points + (points === 1 ? ' point' : ' points') + ' left');
+}
+
+function printScrapedGiveawaysInfo(pageNumber: number, giveawayCount: number): void {
+    console.log('Scrapped ' + pageNumber + (pageNumber === 1 ? ' page' : ' pages') +
+        ' and found ' + giveawayCount + ' unique ' + (giveawayCount === 1 ? 'giveaway' : 'giveaways'));
+}
+
+export {
+    customFilter,
+    printCannotEnterGiveaway,
+    printAlreadyInGiveaway,
+    printEnteredGiveaway,
+    printFailedToEnterGiveaway,
+    printNumberOfEnteredGiveaways,
+    printRemainingPoints,
+    printScrapedGiveawaysInfo
+};
