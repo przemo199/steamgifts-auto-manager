@@ -4,7 +4,6 @@ import pluginStealth from 'puppeteer-extra-plugin-stealth';
 import {getGiveawaysFromHtml} from './giveaway-scrapper.js';
 import {Giveaway} from './interfaces';
 import * as utils from './utils.js';
-import {printScrapedGiveawaysInfo} from './utils.js';
 
 puppeteer.use(pluginStealth());
 
