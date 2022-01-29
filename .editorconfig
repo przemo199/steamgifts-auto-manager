@@ -9,3 +9,6 @@ trim_trailing_whitespace = true
 
 [*.{ts, tsx}]
 insert_final_newline = true
+
+[*.{yml, yaml}]
+indent_size = 2
