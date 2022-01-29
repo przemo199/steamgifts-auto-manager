@@ -10,7 +10,7 @@ async function main() {
     const requestedGames = requests.getRequestedGames();
     await launchAndLogin();
     const scrapedGiveaways = await scrapeGiveaways();
-    const giveawaysToEnter = scrapedGiveaways.filter(game => customFilter(game.gameTitle, requestedGames));
+    const giveawaysToEnter = scrapedGiveaways.filter(game => customFilter(game.title, requestedGames));
     await enterGiveaways(giveawaysToEnter);
 
     console.timeEnd('Total execution time');

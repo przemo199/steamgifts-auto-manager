@@ -21,7 +21,7 @@ it('correctly returns required values from html string', () => {
         '\t\t\t</div>';
 
     const expectedResult = {
-        gameTitle: 'TestTitle',
+        title: 'TestTitle',
         pointCost: 10,
         relativeUrl: 'testUrl',
         requiredLevel: 0

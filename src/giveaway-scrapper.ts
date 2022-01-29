@@ -11,26 +11,13 @@ const GAME_MISC_CLASS = '.giveaway__heading__thin';
 const REQUIRED_LEVEL_CLASS = '.giveaway__column--contributor-level.giveaway__column--contributor-level--negative';
 
 function getGiveawaysFromHtml(html: string): Giveaway[] {
-    function getRelativeUrl(game: Element) {
-        return game.querySelector(THUMBNAIL_CLASS) || game.querySelector(THUMBNAIL_MISSING_CLASS);
+    function getGiveawayTitle(giveaway: Element) {
+        return giveaway.querySelector(GAME_NAME_CLASS)?.textContent || '';
     }
 
-    function getRequiredLevel(game: Element) {
-        const levelElement = game.querySelector(REQUIRED_LEVEL_CLASS);
-
-        if (levelElement && levelElement.textContent) {
-            const matchResult = levelElement.textContent.match(DIGITS_ONLY_REGEX);
-            if (matchResult && matchResult[0]) {
-                return parseInt(matchResult[0]);
-            }
-        } else {
-            return 0;
-        }
-    }
-
-    function getPointCost(game: Element): number {
+    function getGiveawayPointCost(giveaway: Element): number {
         let result = 0;
-        const elems = game.querySelectorAll(GAME_MISC_CLASS);
+        const elems = giveaway.querySelectorAll(GAME_MISC_CLASS);
         const elem = elems[elems.length - 1];
         const toCheck = elem.textContent?.match(DIGITS_ONLY_REGEX);
         if (toCheck && toCheck[0]) {
@@ -39,19 +26,36 @@ function getGiveawaysFromHtml(html: string): Giveaway[] {
         return result;
     }
 
-    const document = (new JSDOM(html)).window.document;
-    const gamesList = [];
-    const games = document.querySelectorAll(INNER_GAME_WRAP_CLASS);
-
-    for (const game of games) {
-        const gameTitle = game.querySelector(GAME_NAME_CLASS)?.textContent || '';
-        const pointCost = getPointCost(game);
-        const relativeUrl = getRelativeUrl(game)?.getAttribute('href') || '';
-        const requiredLevel = getRequiredLevel(game) || 0;
-        gamesList.push({gameTitle, pointCost, requiredLevel, relativeUrl});
+    function getGiveawayRelativeUrl(giveaway: Element) {
+        const urlElement = giveaway.querySelector(THUMBNAIL_CLASS) || giveaway.querySelector(THUMBNAIL_MISSING_CLASS);
+        return urlElement?.getAttribute('href') || '';
     }
 
-    return gamesList;
+    function getGiveawayRequiredLevel(giveaway: Element) {
+        const levelElement = giveaway.querySelector(REQUIRED_LEVEL_CLASS);
+
+        if (levelElement && levelElement.textContent) {
+            const matchResult = levelElement.textContent.match(DIGITS_ONLY_REGEX);
+            if (matchResult && matchResult[0]) {
+                return parseInt(matchResult[0]);
+            }
+        }
+        return 0;
+    }
+
+    const document = (new JSDOM(html)).window.document;
+    const giveawayList = [];
+    const giveaways = document.querySelectorAll(INNER_GAME_WRAP_CLASS);
+
+    for (const giveaway of giveaways) {
+        const title = getGiveawayTitle(giveaway);
+        const pointCost = getGiveawayPointCost(giveaway);
+        const relativeUrl = getGiveawayRelativeUrl(giveaway);
+        const requiredLevel = getGiveawayRequiredLevel(giveaway);
+        giveawayList.push({title, pointCost, requiredLevel, relativeUrl});
+    }
+
+    return giveawayList;
 }
 
 export {getGiveawaysFromHtml};

@@ -1,5 +1,5 @@
 interface Giveaway {
-    gameTitle: string;
+    title: string;
     pointCost: number;
     requiredLevel: number;
     relativeUrl: string;

@@ -15,7 +15,6 @@ const ENTERED_GIVEAWAYS_SEARCH_URL = BASE_URL + '/giveaways/entered/search?page=
 let browser: Browser;
 
 async function launchBrowser(headless = true): Promise<Browser> {
-    // @ts-ignore
     return puppeteer.launch({headless: headless, userDataDir: './tmp/userData'});
 }
 
@@ -25,22 +24,22 @@ async function enterGiveaway(giveaway: Giveaway): Promise<boolean> {
     await page.goto(BASE_URL + giveaway.relativeUrl, {waitUntil: 'domcontentloaded'});
 
     if ((await page.$$('.sidebar__error')).length != 0) {
-        utils.printCannotEnterGiveaway(giveaway.gameTitle);
+        utils.printCannotEnterGiveaway(giveaway.title);
     } else {
         if ((await page.$$('.sidebar__entry-insert.is-hidden')).length != 0) {
-            utils.printAlreadyInGiveaway(giveaway.gameTitle);
+            utils.printAlreadyInGiveaway(giveaway.title);
         } else {
             if ((await page.$$('.sidebar__entry-insert')).length != 0) {
                 try {
                     await page.click('.sidebar__entry-insert');
                     await page.waitForSelector('.sidebar__entry-insert.is-hidden', {timeout: 2000});
-                    utils.printEnteredGiveaway(giveaway.gameTitle);
+                    utils.printEnteredGiveaway(giveaway.title);
                     result = true;
                 } catch (e) {
-                    utils.printFailedToEnterGiveaway(giveaway.gameTitle);
+                    utils.printFailedToEnterGiveaway(giveaway.title);
                 }
             } else {
-                utils.printFailedToEnterGiveaway(giveaway.gameTitle);
+                utils.printFailedToEnterGiveaway(giveaway.title);
             }
         }
     }
